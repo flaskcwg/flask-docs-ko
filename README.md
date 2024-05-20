@@ -1,45 +1,27 @@
-# Flask
+<div align="center">
 
-Flask is a lightweight [WSGI][] web application framework. It is designed
-to make getting started quick and easy, with the ability to scale up to
-complex applications. It began as a simple wrapper around [Werkzeug][]
-and [Jinja][], and has become one of the most popular Python web
-application frameworks.
+# 플라스크 (Flask)
 
-Flask offers suggestions, but doesn't enforce any dependencies or
-project layout. It is up to the developer to choose the tools and
-libraries they want to use. There are many extensions provided by the
-community that make adding new functionality easy.
+![image](https://github.com/flaskcwg/flask-docs-ko/assets/60090391/b2366693-e241-40c8-a02e-f12e218c42e4)
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/Flask -black?style=flat-square&logo=flask&logoColor=skyblue"/>
+</div>
 
-[WSGI]: https://wsgi.readthedocs.io/
-[Werkzeug]: https://werkzeug.palletsprojects.com/
-[Jinja]: https://jinja.palletsprojects.com/
-
-
-## A Simple Example
-
-```python
-# save this as app.py
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.route("/")
-def hello():
-    return "Hello, World!"
-```
-
-```
-$ flask run
-  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-```
+## 기여하는 방법
+1. 레포지토리를 fork합니다.
+2. [poedit](https://poedit.net/) 을 다운로드 합니다.
+3. 새 브랜치를 생성합니다.
+4. `docs/locales/ko/LC_MESSAGES`로 가서 poedit을 이용하여 `.po` 파일을 번역합니다.
+5. git commit & git push를 합니다.
+   ```shell
+   git push origin HEAD
+   ```
+6. 이 과정에서 파이썬을 설치할 필요는 없습니다.
 
 
-## Donate
-
-The Pallets organization develops and supports Flask and the libraries
-it uses. In order to grow the community of contributors and users, and
-allow the maintainers to devote more time to the projects, [please
-donate today][].
-
-[please donate today]: https://palletsprojects.com/donate
+## How to translate to Korean
+1. Fork repo → Clone repo (You might not have access)
+2. Download [poedit](https://poedit.net/)
+3. Go to `docs/locales/ko/LC_MESSAGES` and translate `.po` files using poedit
+4. Create new branch
+5. git commit & git push origin HEAD
+6. You don't need to install Python
