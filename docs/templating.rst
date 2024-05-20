@@ -18,7 +18,7 @@ Jinja Setup
 Unless customized, Jinja2 is configured by Flask as follows:
 
 -   autoescaping is enabled for all templates ending in ``.html``,
-    ``.htm``, ``.xml`` as well as ``.xhtml`` when using
+    ``.htm``, ``.xml``, ``.xhtml``, as well as ``.svg`` when using
     :func:`~flask.templating.render_template`.
 -   autoescaping is enabled for all strings when using
     :func:`~flask.templating.render_template_string`.
@@ -115,7 +115,7 @@ markdown to HTML converter.
 
 There are three ways to accomplish that:
 
--   In the Python code, wrap the HTML string in a :class:`~flask.Markup`
+-   In the Python code, wrap the HTML string in a :class:`~markupsafe.Markup`
     object before passing it to the template.  This is in general the
     recommended way.
 -   Inside the template, use the ``|safe`` filter to explicitly mark a
@@ -201,3 +201,29 @@ templates::
 You could also build `format_price` as a template filter (see
 :ref:`registering-filters`), but this demonstrates how to pass functions in a
 context processor.
+
+Streaming
+---------
+
+It can be useful to not render the whole template as one complete
+string, instead render it as a stream, yielding smaller incremental
+strings. This can be used for streaming HTML in chunks to speed up
+initial page load, or to save memory when rendering a very large
+template.
+
+The Jinja2 template engine supports rendering a template piece
+by piece, returning an iterator of strings. Flask provides the
+:func:`~flask.stream_template` and :func:`~flask.stream_template_string`
+functions to make this easier to use.
+
+.. code-block:: python
+
+    from flask import stream_template
+
+    @app.get("/timeline")
+    def timeline():
+        return stream_template("timeline.html")
+
+These functions automatically apply the
+:func:`~flask.stream_with_context` wrapper if a request is active, so
+that it remains available in the template.

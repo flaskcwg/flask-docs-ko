@@ -2,10 +2,10 @@ import io
 import os
 
 import pytest
+import werkzeug.exceptions
 
 import flask
 from flask.helpers import get_debug_flag
-from flask.helpers import get_env
 
 
 class FakePath:
@@ -118,11 +118,15 @@ class TestUrlFor:
         )
 
     def test_url_for_with_scheme_not_external(self, app, req_ctx):
-        @app.route("/")
-        def index():
-            return "42"
+        app.add_url_rule("/", endpoint="index")
 
-        pytest.raises(ValueError, flask.url_for, "index", _scheme="https")
+        # Implicit external with scheme.
+        url = flask.url_for("index", _scheme="https")
+        assert url == "https://localhost/"
+
+        # Error when external=False with scheme
+        with pytest.raises(ValueError):
+            flask.url_for("index", _scheme="https", _external=False)
 
     def test_url_for_with_alternating_schemes(self, app, req_ctx):
         @app.route("/")
@@ -157,6 +161,58 @@ class TestUrlFor:
         assert flask.url_for("myview", id=42, _method="GET") == "/myview/42"
         assert flask.url_for("myview", _method="POST") == "/myview/create"
 
+    def test_url_for_with_self(self, app, req_ctx):
+        @app.route("/<self>")
+        def index(self):
+            return "42"
+
+        assert flask.url_for("index", self="2") == "/2"
+
+
+def test_redirect_no_app():
+    response = flask.redirect("https://localhost", 307)
+    assert response.location == "https://localhost"
+    assert response.status_code == 307
+
+
+def test_redirect_with_app(app):
+    def redirect(location, code=302):
+        raise ValueError
+
+    app.redirect = redirect
+
+    with app.app_context(), pytest.raises(ValueError):
+        flask.redirect("other")
+
+
+def test_abort_no_app():
+    with pytest.raises(werkzeug.exceptions.Unauthorized):
+        flask.abort(401)
+
+    with pytest.raises(LookupError):
+        flask.abort(900)
+
+
+def test_app_aborter_class():
+    class MyAborter(werkzeug.exceptions.Aborter):
+        pass
+
+    class MyFlask(flask.Flask):
+        aborter_class = MyAborter
+
+    app = MyFlask(__name__)
+    assert isinstance(app.aborter, MyAborter)
+
+
+def test_abort_with_app(app):
+    class My900Error(werkzeug.exceptions.HTTPException):
+        code = 900
+
+    app.aborter.mapping[900] = My900Error
+
+    with app.app_context(), pytest.raises(My900Error):
+        flask.abort(900)
+
 
 class TestNoImports:
     """Test Flasks are created without import.
@@ -169,8 +225,8 @@ class TestNoImports:
     imp modules in the Python standard library.
     """
 
-    def test_name_with_import_error(self, modules_tmpdir):
-        modules_tmpdir.join("importerror.py").write("raise NotImplementedError()")
+    def test_name_with_import_error(self, modules_tmp_path):
+        (modules_tmp_path / "importerror.py").write_text("raise NotImplementedError()")
         try:
             flask.Flask("importerror")
         except NotImplementedError:
@@ -253,38 +309,18 @@ class TestStreaming:
 
 class TestHelpers:
     @pytest.mark.parametrize(
-        "debug, expected_flag, expected_default_flag",
+        ("debug", "expect"),
         [
-            ("", False, False),
-            ("0", False, False),
-            ("False", False, False),
-            ("No", False, False),
-            ("True", True, True),
+            ("", False),
+            ("0", False),
+            ("False", False),
+            ("No", False),
+            ("True", True),
         ],
     )
-    def test_get_debug_flag(
-        self, monkeypatch, debug, expected_flag, expected_default_flag
-    ):
+    def test_get_debug_flag(self, monkeypatch, debug, expect):
         monkeypatch.setenv("FLASK_DEBUG", debug)
-        if expected_flag is None:
-            assert get_debug_flag() is None
-        else:
-            assert get_debug_flag() == expected_flag
-        assert get_debug_flag() == expected_default_flag
-
-    @pytest.mark.parametrize(
-        "env, ref_env, debug",
-        [
-            ("", "production", False),
-            ("production", "production", False),
-            ("development", "development", True),
-            ("other", "other", False),
-        ],
-    )
-    def test_get_env(self, monkeypatch, env, ref_env, debug):
-        monkeypatch.setenv("FLASK_ENV", env)
-        assert get_debug_flag() == debug
-        assert get_env() == ref_env
+        assert get_debug_flag() == expect
 
     def test_make_response(self):
         app = flask.Flask(__name__)

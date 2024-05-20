@@ -1,27 +1,25 @@
 <!--
-Before opening a PR, make sure you have claimed to translate a file by
-adding your username after the file entry in the README.md.
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
 -->
 
 <!--
 Link to relevant issues or previous PRs, one per line. Use "fixes" to
 automatically close an issue.
--->
 
-- fixes #<issue number>
+fixes #<issue number>
+-->
 
 <!--
-For translation PR, ensure each step in the "Contrubuting Guide" of
-the README.md is complete by adding an "x" to each box below.
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
 
-For assignment PR, you can delete the checklist below.
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
 -->
-
-Checklist:
-
-- [ ] Fill the checkbox of the related file entry in the README.md with an "x".
-- [ ] Update the `FIRST AUTHOR <EMAIL@ADDRESS>` comment in the `.po` file if you
-are the first translator.
-- [ ] Update the `Last-Translator` field value in the `.po` file.
-- [ ] Run `pre-commit` hooks and fix any issues.
-- [ ] Build docs locally, no warnings or errors.

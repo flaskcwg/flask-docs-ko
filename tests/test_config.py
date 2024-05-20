@@ -1,12 +1,9 @@
 import json
 import os
-import textwrap
-from datetime import timedelta
 
 import pytest
 
 import flask
-
 
 # config keys used for the TestConfig
 TEST_KEY = "foo"
@@ -31,11 +28,83 @@ def test_config_from_object():
     common_object_test(app)
 
 
-def test_config_from_file():
+def test_config_from_file_json():
     app = flask.Flask(__name__)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     app.config.from_file(os.path.join(current_dir, "static", "config.json"), json.load)
     common_object_test(app)
+
+
+def test_config_from_file_toml():
+    tomllib = pytest.importorskip("tomllib", reason="tomllib added in 3.11")
+    app = flask.Flask(__name__)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    app.config.from_file(
+        os.path.join(current_dir, "static", "config.toml"), tomllib.load, text=False
+    )
+    common_object_test(app)
+
+
+def test_from_prefixed_env(monkeypatch):
+    monkeypatch.setenv("FLASK_STRING", "value")
+    monkeypatch.setenv("FLASK_BOOL", "true")
+    monkeypatch.setenv("FLASK_INT", "1")
+    monkeypatch.setenv("FLASK_FLOAT", "1.2")
+    monkeypatch.setenv("FLASK_LIST", "[1, 2]")
+    monkeypatch.setenv("FLASK_DICT", '{"k": "v"}')
+    monkeypatch.setenv("NOT_FLASK_OTHER", "other")
+
+    app = flask.Flask(__name__)
+    app.config.from_prefixed_env()
+
+    assert app.config["STRING"] == "value"
+    assert app.config["BOOL"] is True
+    assert app.config["INT"] == 1
+    assert app.config["FLOAT"] == 1.2
+    assert app.config["LIST"] == [1, 2]
+    assert app.config["DICT"] == {"k": "v"}
+    assert "OTHER" not in app.config
+
+
+def test_from_prefixed_env_custom_prefix(monkeypatch):
+    monkeypatch.setenv("FLASK_A", "a")
+    monkeypatch.setenv("NOT_FLASK_A", "b")
+
+    app = flask.Flask(__name__)
+    app.config.from_prefixed_env("NOT_FLASK")
+
+    assert app.config["A"] == "b"
+
+
+def test_from_prefixed_env_nested(monkeypatch):
+    monkeypatch.setenv("FLASK_EXIST__ok", "other")
+    monkeypatch.setenv("FLASK_EXIST__inner__ik", "2")
+    monkeypatch.setenv("FLASK_EXIST__new__more", '{"k": false}')
+    monkeypatch.setenv("FLASK_NEW__K", "v")
+
+    app = flask.Flask(__name__)
+    app.config["EXIST"] = {"ok": "value", "flag": True, "inner": {"ik": 1}}
+    app.config.from_prefixed_env()
+
+    if os.name != "nt":
+        assert app.config["EXIST"] == {
+            "ok": "other",
+            "flag": True,
+            "inner": {"ik": 2},
+            "new": {"more": {"k": False}},
+        }
+    else:
+        # Windows env var keys are always uppercase.
+        assert app.config["EXIST"] == {
+            "ok": "value",
+            "OK": "other",
+            "flag": True,
+            "inner": {"ik": 1},
+            "INNER": {"IK": 2},
+            "NEW": {"MORE": {"k": False}},
+        }
+
+    assert app.config["NEW"] == {"K": "v"}
 
 
 def test_config_from_mapping():
@@ -49,6 +118,10 @@ def test_config_from_mapping():
 
     app = flask.Flask(__name__)
     app.config.from_mapping(SECRET_KEY="config", TEST_KEY="foo")
+    common_object_test(app)
+
+    app = flask.Flask(__name__)
+    app.config.from_mapping(SECRET_KEY="config", TEST_KEY="foo", skip_key="skip")
     common_object_test(app)
 
     app = flask.Flask(__name__)
@@ -71,9 +144,11 @@ def test_config_from_class():
 def test_config_from_envvar(monkeypatch):
     monkeypatch.setattr("os.environ", {})
     app = flask.Flask(__name__)
+
     with pytest.raises(RuntimeError) as e:
         app.config.from_envvar("FOO_SETTINGS")
-        assert "'FOO_SETTINGS' is not set" in str(e.value)
+
+    assert "'FOO_SETTINGS' is not set" in str(e.value)
     assert not app.config.from_envvar("FOO_SETTINGS", silent=True)
 
     monkeypatch.setattr(
@@ -85,8 +160,8 @@ def test_config_from_envvar(monkeypatch):
 
 def test_config_from_envvar_missing(monkeypatch):
     monkeypatch.setattr("os.environ", {"FOO_SETTINGS": "missing.cfg"})
+    app = flask.Flask(__name__)
     with pytest.raises(IOError) as e:
-        app = flask.Flask(__name__)
         app.config.from_envvar("FOO_SETTINGS")
     msg = str(e.value)
     assert msg.startswith(
@@ -139,14 +214,6 @@ def test_session_lifetime():
     assert app.permanent_session_lifetime.seconds == 42
 
 
-def test_send_file_max_age():
-    app = flask.Flask(__name__)
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 3600
-    assert app.send_file_max_age_default.seconds == 3600
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(hours=2)
-    assert app.send_file_max_age_default.seconds == 7200
-
-
 def test_get_namespace():
     app = flask.Flask(__name__)
     app.config["FOO_OPTION_1"] = "foo option 1"
@@ -174,17 +241,10 @@ def test_get_namespace():
 
 
 @pytest.mark.parametrize("encoding", ["utf-8", "iso-8859-15", "latin-1"])
-def test_from_pyfile_weird_encoding(tmpdir, encoding):
-    f = tmpdir.join("my_config.py")
-    f.write_binary(
-        textwrap.dedent(
-            f"""
-            # -*- coding: {encoding} -*-
-            TEST_VALUE = "föö"
-            """
-        ).encode(encoding)
-    )
+def test_from_pyfile_weird_encoding(tmp_path, encoding):
+    f = tmp_path / "my_config.py"
+    f.write_text(f'# -*- coding: {encoding} -*-\nTEST_VALUE = "föö"\n', encoding)
     app = flask.Flask(__name__)
-    app.config.from_pyfile(str(f))
+    app.config.from_pyfile(os.fspath(f))
     value = app.config["TEST_VALUE"]
     assert value == "föö"

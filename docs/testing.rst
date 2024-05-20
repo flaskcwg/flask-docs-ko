@@ -109,10 +109,8 @@ provides ``response.text``, or use ``response.get_data(as_text=True)``.
 
 
 Pass a dict ``query_string={"key": "value", ...}`` to set arguments in
-the query string (after the ``?`` in the URL). You can also pass a
-string if you want to set a specific value directly.
-
-Pass a dict to ``headers={}`` to set request headers.
+the query string (after the ``?`` in the URL). Pass a dict
+``headers={}`` to set request headers.
 
 To send a request body in a POST or PUT request, pass a value to
 ``data``. If raw bytes are passed, that exact body is used. Usually,
@@ -267,10 +265,10 @@ command from the command line.
         click.echo(f"Hello, {name}!")
 
     def test_hello_command(runner):
-        result = runner.invoke(["hello"])
+        result = runner.invoke(args="hello")
         assert "World" in result.output
 
-        result = runner.invoke(["hello", "--name", "Flask"])
+        result = runner.invoke(args=["hello", "--name", "Flask"])
         assert "Flask" in result.output
 
 

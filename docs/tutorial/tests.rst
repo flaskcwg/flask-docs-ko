@@ -266,7 +266,7 @@ messages.
         response = client.post(
             '/auth/register', data={'username': 'a', 'password': 'a'}
         )
-        assert 'http://localhost/auth/login' == response.headers['Location']
+        assert response.headers["Location"] == "/auth/login"
 
         with app.app_context():
             assert get_db().execute(
@@ -319,7 +319,7 @@ The tests for the ``login`` view are very similar to those for
     def test_login(client, auth):
         assert client.get('/auth/login').status_code == 200
         response = auth.login()
-        assert response.headers['Location'] == 'http://localhost/'
+        assert response.headers["Location"] == "/"
 
         with client:
             client.get('/')
@@ -404,7 +404,7 @@ is returned. If a ``post`` with the given ``id`` doesn't exist,
     ))
     def test_login_required(client, path):
         response = client.post(path)
-        assert response.headers['Location'] == 'http://localhost/auth/login'
+        assert response.headers["Location"] == "/auth/login"
 
 
     def test_author_required(app, client, auth):
@@ -479,7 +479,7 @@ no longer exist in the database.
     def test_delete(client, auth, app):
         auth.login()
         response = client.post('/1/delete')
-        assert response.headers['Location'] == 'http://localhost/'
+        assert response.headers["Location"] == "/"
 
         with app.app_context():
             db = get_db()
@@ -490,20 +490,18 @@ no longer exist in the database.
 Running the Tests
 -----------------
 
-Some extra configuration, which is not required but makes running
-tests with coverage less verbose, can be added to the project's
-``setup.cfg`` file.
+Some extra configuration, which is not required but makes running tests with coverage
+less verbose, can be added to the project's ``pyproject.toml`` file.
 
-.. code-block:: none
-    :caption: ``setup.cfg``
+.. code-block:: toml
+    :caption: ``pyproject.toml``
 
-    [tool:pytest]
-    testpaths = tests
+    [tool.pytest.ini_options]
+    testpaths = ["tests"]
 
-    [coverage:run]
-    branch = True
-    source =
-        flaskr
+    [tool.coverage.run]
+    branch = true
+    source = ["flaskr"]
 
 To run the tests, use the ``pytest`` command. It will find and run all
 the test functions you've written.
@@ -514,7 +512,7 @@ the test functions you've written.
 
     ========================= test session starts ==========================
     platform linux -- Python 3.6.4, pytest-3.5.0, py-1.5.3, pluggy-0.6.0
-    rootdir: /home/user/Projects/flask-tutorial, inifile: setup.cfg
+    rootdir: /home/user/Projects/flask-tutorial
     collected 23 items
 
     tests/test_auth.py ........                                      [ 34%]

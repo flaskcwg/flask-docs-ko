@@ -2,11 +2,11 @@ from flask import jsonify
 from flask import render_template
 from flask import request
 
-from js_example import app
+from . import app
 
 
-@app.route("/", defaults={"js": "plain"})
-@app.route("/<any(plain, jquery, fetch):js>")
+@app.route("/", defaults={"js": "fetch"})
+@app.route("/<any(xhr, jquery, fetch):js>")
 def index(js):
     return render_template(f"{js}.html", js=js)
 

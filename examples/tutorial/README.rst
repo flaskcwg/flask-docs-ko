@@ -23,13 +23,13 @@ default Git version is the main branch. ::
 
 Create a virtualenv and activate it::
 
-    $ python3 -m venv venv
-    $ . venv/bin/activate
+    $ python3 -m venv .venv
+    $ . .venv/bin/activate
 
 Or on Windows cmd::
 
-    $ py -3 -m venv venv
-    $ venv\Scripts\activate.bat
+    $ py -3 -m venv .venv
+    $ .venv\Scripts\activate.bat
 
 Install Flaskr::
 
@@ -45,19 +45,10 @@ installing Flaskr::
 Run
 ---
 
-::
+.. code-block:: text
 
-    $ export FLASK_APP=flaskr
-    $ export FLASK_ENV=development
-    $ flask init-db
-    $ flask run
-
-Or on Windows cmd::
-
-    > set FLASK_APP=flaskr
-    > set FLASK_ENV=development
-    > flask init-db
-    > flask run
+    $ flask --app flaskr init-db
+    $ flask --app flaskr run --debug
 
 Open http://127.0.0.1:5000 in a browser.
 

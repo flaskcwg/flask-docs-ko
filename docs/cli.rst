@@ -15,40 +15,10 @@ Application Discovery
 ---------------------
 
 The ``flask`` command is installed by Flask, not your application; it must be
-told where to find your application in order to use it. The ``FLASK_APP``
-environment variable is used to specify how to load the application.
+told where to find your application in order to use it. The ``--app``
+option is used to specify how to load the application.
 
-.. tabs::
-
-   .. group-tab:: Bash
-
-      .. code-block:: text
-
-         $ export FLASK_APP=hello
-         $ flask run
-
-   .. group-tab:: Fish
-
-      .. code-block:: text
-
-         $ set -x FLASK_APP hello
-         $ flask run
-
-   .. group-tab:: CMD
-
-      .. code-block:: text
-
-         > set FLASK_APP=hello
-         > flask run
-
-   .. group-tab:: Powershell
-
-      .. code-block:: text
-
-         > $env:FLASK_APP = "hello"
-         > flask run
-
-While ``FLASK_APP`` supports a variety of options for specifying your
+While ``--app`` supports a variety of options for specifying your
 application, most use cases should be simple. Here are the typical values:
 
 (nothing)
@@ -56,32 +26,32 @@ application, most use cases should be simple. Here are the typical values:
     automatically detecting an app (``app`` or ``application``) or
     factory (``create_app`` or ``make_app``).
 
-``FLASK_APP=hello``
+``--app hello``
     The given name is imported, automatically detecting an app (``app``
     or ``application``) or factory (``create_app`` or ``make_app``).
 
 ----
 
-``FLASK_APP`` has three parts: an optional path that sets the current working
+``--app`` has three parts: an optional path that sets the current working
 directory, a Python file or dotted import path, and an optional variable
 name of the instance or factory. If the name is a factory, it can optionally
 be followed by arguments in parentheses. The following values demonstrate these
 parts:
 
-``FLASK_APP=src/hello``
+``--app src/hello``
     Sets the current working directory to ``src`` then imports ``hello``.
 
-``FLASK_APP=hello.web``
+``--app hello.web``
     Imports the path ``hello.web``.
 
-``FLASK_APP=hello:app2``
+``--app hello:app2``
     Uses the ``app2`` Flask instance in ``hello``.
 
-``FLASK_APP="hello:create_app('dev')"``
+``--app 'hello:create_app("dev")'``
     The ``create_app`` factory in ``hello`` is called with the string ``'dev'``
     as the argument.
 
-If ``FLASK_APP`` is not set, the command will try to import "app" or
+If ``--app`` is not set, the command will try to import "app" or
 "wsgi" (as a ".py" file, or package) and try to detect an application
 instance or factory.
 
@@ -101,7 +71,7 @@ Run the Development Server
 The :func:`run <cli.run_command>` command will start the development server. It
 replaces the :meth:`Flask.run` method in most cases. ::
 
-    $ flask run
+    $ flask --app hello run
      * Serving Flask app "hello"
      * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
@@ -116,6 +86,50 @@ server tries to start. See :ref:`address-already-in-use` for how to
 handle that.
 
 
+Debug Mode
+~~~~~~~~~~
+
+In debug mode, the ``flask run`` command will enable the interactive debugger and the
+reloader by default, and make errors easier to see and debug. To enable debug mode, use
+the ``--debug`` option.
+
+.. code-block:: console
+
+     $ flask --app hello run --debug
+      * Serving Flask app "hello"
+      * Debug mode: on
+      * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+      * Restarting with inotify reloader
+      * Debugger is active!
+      * Debugger PIN: 223-456-919
+
+The ``--debug`` option can also be passed to the top level ``flask`` command to enable
+debug mode for any command. The following two ``run`` calls are equivalent.
+
+.. code-block:: console
+
+    $ flask --app hello --debug run
+    $ flask --app hello run --debug
+
+
+Watch and Ignore Files with the Reloader
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When using debug mode, the reloader will trigger whenever your Python code or imported
+modules change. The reloader can watch additional files with the ``--extra-files``
+option. Multiple paths are separated with ``:``, or ``;`` on Windows.
+
+.. code-block:: text
+
+    $ flask run --extra-files file1:dirA/file2:dirB/
+     * Running on http://127.0.0.1:8000/
+     * Detected change in '/path/to/file1', reloading
+
+The reloader can also ignore files using :mod:`fnmatch` patterns with the
+``--exclude-patterns`` option. Multiple patterns are separated with ``:``, or ``;`` on
+Windows.
+
+
 Open a Shell
 ------------
 
@@ -124,151 +138,12 @@ shell with the :func:`shell <cli.shell_command>` command. An application
 context will be active, and the app instance will be imported. ::
 
     $ flask shell
-    Python 3.6.2 (default, Jul 20 2017, 03:52:27)
-    [GCC 7.1.1 20170630] on linux
-    App: example
-    Instance: /home/user/Projects/hello/instance
+    Python 3.10.0 (default, Oct 27 2021, 06:59:51) [GCC 11.1.0] on linux
+    App: example [production]
+    Instance: /home/david/Projects/pallets/flask/instance
     >>>
 
 Use :meth:`~Flask.shell_context_processor` to add other automatic imports.
-
-
-Environments
-------------
-
-.. versionadded:: 1.0
-
-The environment in which the Flask app runs is set by the
-:envvar:`FLASK_ENV` environment variable. If not set it defaults to
-``production``. The other recognized environment is ``development``.
-Flask and extensions may choose to enable behaviors based on the
-environment.
-
-If the env is set to ``development``, the ``flask`` command will enable
-debug mode and ``flask run`` will enable the interactive debugger and
-reloader.
-
-.. tabs::
-
-   .. group-tab:: Bash
-
-      .. code-block:: text
-
-         $ export FLASK_ENV=development
-         $ flask run
-          * Serving Flask app "hello"
-          * Environment: development
-          * Debug mode: on
-          * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-          * Restarting with inotify reloader
-          * Debugger is active!
-          * Debugger PIN: 223-456-919
-
-   .. group-tab:: Fish
-
-      .. code-block:: text
-
-         $ set -x FLASK_ENV development
-         $ flask run
-          * Serving Flask app "hello"
-          * Environment: development
-          * Debug mode: on
-          * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-          * Restarting with inotify reloader
-          * Debugger is active!
-          * Debugger PIN: 223-456-919
-
-   .. group-tab:: CMD
-
-      .. code-block:: text
-
-         > set FLASK_ENV=development
-         > flask run
-          * Serving Flask app "hello"
-          * Environment: development
-          * Debug mode: on
-          * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-          * Restarting with inotify reloader
-          * Debugger is active!
-          * Debugger PIN: 223-456-919
-
-   .. group-tab:: Powershell
-
-      .. code-block:: text
-
-         > $env:FLASK_ENV = "development"
-         > flask run
-          * Serving Flask app "hello"
-          * Environment: development
-          * Debug mode: on
-          * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-          * Restarting with inotify reloader
-          * Debugger is active!
-          * Debugger PIN: 223-456-919
-
-
-Watch Extra Files with the Reloader
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-When using development mode, the reloader will trigger whenever your
-Python code or imported modules change. The reloader can watch
-additional files with the ``--extra-files`` option, or the
-``FLASK_RUN_EXTRA_FILES`` environment variable. Multiple paths are
-separated with ``:``, or ``;`` on Windows.
-
-.. tabs::
-
-   .. group-tab:: Bash
-
-      .. code-block:: text
-
-          $ flask run --extra-files file1:dirA/file2:dirB/
-          # or
-          $ export FLASK_RUN_EXTRA_FILES=file1:dirA/file2:dirB/
-          $ flask run
-           * Running on http://127.0.0.1:8000/
-           * Detected change in '/path/to/file1', reloading
-
-   .. group-tab:: Fish
-
-      .. code-block:: text
-
-          $ flask run --extra-files file1:dirA/file2:dirB/
-          # or
-          $ set -x FLASK_RUN_EXTRA_FILES file1 dirA/file2 dirB/
-          $ flask run
-           * Running on http://127.0.0.1:8000/
-           * Detected change in '/path/to/file1', reloading
-
-   .. group-tab:: CMD
-
-      .. code-block:: text
-
-          > flask run --extra-files file1:dirA/file2:dirB/
-          # or
-          > set FLASK_RUN_EXTRA_FILES=file1:dirA/file2:dirB/
-          > flask run
-           * Running on http://127.0.0.1:8000/
-           * Detected change in '/path/to/file1', reloading
-
-   .. group-tab:: Powershell
-
-      .. code-block:: text
-
-          > flask run --extra-files file1:dirA/file2:dirB/
-          # or
-          > $env:FLASK_RUN_EXTRA_FILES = "file1:dirA/file2:dirB/"
-          > flask run
-           * Running on http://127.0.0.1:8000/
-           * Detected change in '/path/to/file1', reloading
-
-
-Debug Mode
-----------
-
-Debug mode will be enabled when :envvar:`FLASK_ENV` is ``development``,
-as described above. If you want to control debug mode separately, use
-:envvar:`FLASK_DEBUG`. The value ``1`` enables it, ``0`` disables it.
 
 
 .. _dotenv:
@@ -276,14 +151,21 @@ as described above. If you want to control debug mode separately, use
 Environment Variables From dotenv
 ---------------------------------
 
-Rather than setting ``FLASK_APP`` each time you open a new terminal, you can
-use Flask's dotenv support to set environment variables automatically.
+The ``flask`` command supports setting any option for any command with
+environment variables. The variables are named like ``FLASK_OPTION`` or
+``FLASK_COMMAND_OPTION``, for example ``FLASK_APP`` or
+``FLASK_RUN_PORT``.
+
+Rather than passing options every time you run a command, or environment
+variables every time you open a new terminal, you can use Flask's dotenv
+support to set environment variables automatically.
 
 If `python-dotenv`_ is installed, running the ``flask`` command will set
-environment variables defined in the files :file:`.env` and :file:`.flaskenv`.
-This can be used to avoid having to set ``FLASK_APP`` manually every time you
-open a new terminal, and to set configuration using environment variables
-similar to how some deployment services work.
+environment variables defined in the files ``.env`` and ``.flaskenv``.
+You can also specify an extra file to load with the ``--env-file``
+option. Dotenv files can be used to avoid having to set ``--app`` or
+``FLASK_APP`` manually, and to set configuration using environment
+variables similar to how some deployment services work.
 
 Variables set on the command line are used over those set in :file:`.env`,
 which are used over those set in :file:`.flaskenv`. :file:`.flaskenv` should be
@@ -291,9 +173,7 @@ used for public variables, such as ``FLASK_APP``, while :file:`.env` should not
 be committed to your repository so that it can set private variables.
 
 Directories are scanned upwards from the directory you call ``flask``
-from to locate the files. The current working directory will be set to the
-location of the file, with the assumption that that is the top level project
-directory.
+from to locate the files.
 
 The files are only loaded by the ``flask`` command or calling
 :meth:`~Flask.run`. If you would like to load these files when running in
@@ -408,25 +288,25 @@ script. Activating the virtualenv will set the variables.
 
    .. group-tab:: Bash
 
-      Unix Bash, :file:`venv/bin/activate`::
+      Unix Bash, :file:`.venv/bin/activate`::
 
           $ export FLASK_APP=hello
 
    .. group-tab:: Fish
 
-      Fish, :file:`venv/bin/activate.fish`::
+      Fish, :file:`.venv/bin/activate.fish`::
 
           $ set -x FLASK_APP hello
 
    .. group-tab:: CMD
 
-      Windows CMD, :file:`venv\\Scripts\\activate.bat`::
+      Windows CMD, :file:`.venv\\Scripts\\activate.bat`::
 
           > set FLASK_APP=hello
 
    .. group-tab:: Powershell
 
-      Windows Powershell, :file:`venv\\Scripts\\activate.ps1`::
+      Windows Powershell, :file:`.venv\\Scripts\\activate.ps1`::
 
           > $env:FLASK_APP = "hello"
 
@@ -541,12 +421,14 @@ commands directly to the application's level:
 Application Context
 ~~~~~~~~~~~~~~~~~~~
 
-Commands added using the Flask app's :attr:`~Flask.cli`
-:meth:`~cli.AppGroup.command` decorator will be executed with an application
-context pushed, so your command and extensions have access to the app and its
-configuration. If you create a command using the Click :func:`~click.command`
-decorator instead of the Flask decorator, you can use
-:func:`~cli.with_appcontext` to get the same behavior. ::
+Commands added using the Flask app's :attr:`~Flask.cli` or
+:class:`~flask.cli.FlaskGroup` :meth:`~cli.AppGroup.command` decorator
+will be executed with an application context pushed, so your custom
+commands and parameters have access to the app and its configuration. The
+:func:`~cli.with_appcontext` decorator can be used to get the same
+behavior, but is not needed in most cases.
+
+.. code-block:: python
 
     import click
     from flask.cli import with_appcontext
@@ -558,36 +440,22 @@ decorator instead of the Flask decorator, you can use
 
     app.cli.add_command(do_work)
 
-If you're sure a command doesn't need the context, you can disable it::
-
-    @app.cli.command(with_appcontext=False)
-    def do_work():
-        ...
-
 
 Plugins
 -------
 
 Flask will automatically load commands specified in the ``flask.commands``
 `entry point`_. This is useful for extensions that want to add commands when
-they are installed. Entry points are specified in :file:`setup.py` ::
+they are installed. Entry points are specified in :file:`pyproject.toml`:
 
-    from setuptools import setup
+.. code-block:: toml
 
-    setup(
-        name='flask-my-extension',
-        ...,
-        entry_points={
-            'flask.commands': [
-                'my-command=flask_my_extension.commands:cli'
-            ],
-        },
-    )
-
+    [project.entry-points."flask.commands"]
+    my-command = "my_extension.commands:cli"
 
 .. _entry point: https://packaging.python.org/tutorials/packaging-projects/#entry-points
 
-Inside :file:`flask_my_extension/commands.py` you can then export a Click
+Inside :file:`my_extension/commands.py` you can then export a Click
 object::
 
     import click
@@ -606,7 +474,7 @@ Custom Scripts
 --------------
 
 When you are using the app factory pattern, it may be more convenient to define
-your own Click script. Instead of using ``FLASK_APP`` and letting Flask load
+your own Click script. Instead of using ``--app`` and letting Flask load
 your application, you can create your own Click object and export it as a
 `console script`_ entry point.
 
@@ -625,22 +493,15 @@ Create an instance of :class:`~cli.FlaskGroup` and pass it the factory::
     def cli():
         """Management script for the Wiki application."""
 
-Define the entry point in :file:`setup.py`::
+Define the entry point in :file:`pyproject.toml`:
 
-    from setuptools import setup
+.. code-block:: toml
 
-    setup(
-        name='flask-my-extension',
-        ...,
-        entry_points={
-            'console_scripts': [
-                'wiki=wiki:cli'
-            ],
-        },
-    )
+    [project.scripts]
+    wiki = "wiki:cli"
 
 Install the application in the virtualenv in editable mode and the custom
-script is available. Note that you don't need to set ``FLASK_APP``. ::
+script is available. Note that you don't need to set ``--app``. ::
 
     $ pip install -e .
     $ wiki run
@@ -660,53 +521,36 @@ script is available. Note that you don't need to set ``FLASK_APP``. ::
 PyCharm Integration
 -------------------
 
-PyCharm Professional provides a special Flask run configuration. For
-the Community Edition, we need to configure it to call the ``flask run``
-CLI command with the correct environment variables. These instructions
-should be similar for any other IDE you might want to use.
+PyCharm Professional provides a special Flask run configuration to run the development
+server. For the Community Edition, and for other commands besides ``run``, you need to
+create a custom run configuration. These instructions should be similar for any other
+IDE you use.
 
-In PyCharm, with your project open, click on *Run* from the menu bar and
-go to *Edit Configurations*. You'll be greeted by a screen similar to
-this:
+In PyCharm, with your project open, click on *Run* from the menu bar and go to *Edit
+Configurations*. You'll see a screen similar to this:
 
-.. image:: _static/pycharm-runconfig.png
+.. image:: _static/pycharm-run-config.png
     :align: center
     :class: screenshot
-    :alt: Screenshot of PyCharms's run configuration settings.
+    :alt: Screenshot of PyCharm run configuration.
 
-There's quite a few options to change, but once we've done it for one
-command, we can easily copy the entire configuration and make a single
-tweak to give us access to other commands, including any custom ones you
-may implement yourself.
+Once you create a configuration for the ``flask run``, you can copy and change it to
+call any other command.
 
-Click the + (*Add New Configuration*) button and select *Python*. Give
-the configuration a name such as "flask run". For the ``flask run``
-command, check "Single instance only" since you can't run the server
-more than once at the same time.
+Click the *+ (Add New Configuration)* button and select *Python*. Give the configuration
+a name such as "flask run".
 
-Select *Module name* from the dropdown (**A**) then input ``flask``.
+Click the *Script path* dropdown and change it to *Module name*, then input ``flask``.
 
-The *Parameters* field (**B**) is set to the CLI command to execute
-(with any arguments). In this example we use ``run``, which will run
-the development server.
+The *Parameters* field is set to the CLI command to execute along with any arguments.
+This example uses ``--app hello run --debug``, which will run the development server in
+debug mode. ``--app hello`` should be the import or file with your Flask app.
 
-You can skip this next step if you're using :ref:`dotenv`. We need to
-add an environment variable (**C**) to identify our application. Click
-on the browse button and add an entry with ``FLASK_APP`` on the left and
-the Python import or file on the right (``hello`` for example). Add an
-entry with ``FLASK_ENV`` and set it to ``development``.
+If you installed your project as a package in your virtualenv, you may uncheck the
+*PYTHONPATH* options. This will more accurately match how you deploy later.
 
-Next we need to set the working directory (**D**) to be the folder where
-our application resides.
+Click *OK* to save and close the configuration. Select the configuration in the main
+PyCharm window and click the play button next to it to run the server.
 
-If you have installed your project as a package in your virtualenv, you
-may untick the *PYTHONPATH* options (**E**). This will more accurately
-match how you deploy the app later.
-
-Click *Apply* to save the configuration, or *OK* to save and close the
-window. Select the configuration in the main PyCharm window and click
-the play button next to it to run the server.
-
-Now that we have a configuration which runs ``flask run`` from within
-PyCharm, we can copy that configuration and alter the *Script* argument
-to run a different CLI command, e.g. ``flask shell``.
+Now that you have a configuration for ``flask run``, you can copy that configuration and
+change the *Parameters* argument to run a different CLI command.

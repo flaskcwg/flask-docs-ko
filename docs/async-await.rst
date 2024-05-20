@@ -7,8 +7,7 @@ Using ``async`` and ``await``
 
 Routes, error handlers, before request, after request, and teardown
 functions can all be coroutine functions if Flask is installed with the
-``async`` extra (``pip install flask[async]``). It requires Python 3.7+
-where ``contextvars.ContextVar`` is available. This allows views to be
+``async`` extra (``pip install flask[async]``). This allows views to be
 defined with ``async def`` and use ``await``.
 
 .. code-block:: python
@@ -29,6 +28,12 @@ well as all the HTTP method handlers in views that inherit from the
     Python 3.8 has a bug related to asyncio on Windows. If you encounter
     something like ``ValueError: set_wakeup_fd only works in main thread``,
     please upgrade to Python 3.9.
+
+.. admonition:: Using ``async`` with greenlet
+
+    When using gevent or eventlet to serve an application or patch the
+    runtime, greenlet>=1.0 is required. When using PyPy, PyPy>=7.3.7 is
+    required.
 
 
 Performance
@@ -65,8 +70,8 @@ If you wish to use background tasks it is best to use a task queue to
 trigger background work, rather than spawn tasks in a view
 function. With that in mind you can spawn asyncio tasks by serving
 Flask with an ASGI server and utilising the asgiref WsgiToAsgi adapter
-as described in :ref:`asgi`. This works as the adapter creates an
-event loop that runs continually.
+as described in :doc:`deploying/asgi`. This works as the adapter creates
+an event loop that runs continually.
 
 
 When to use Quart instead
@@ -86,7 +91,7 @@ patch low-level Python functions to accomplish this, whereas ``async``/
 whether you should use Flask, Quart, or something else is ultimately up
 to understanding the specific needs of your project.
 
-.. _Quart: https://gitlab.com/pgjones/quart
+.. _Quart: https://github.com/pallets/quart
 .. _ASGI: https://asgi.readthedocs.io/en/latest/
 
 

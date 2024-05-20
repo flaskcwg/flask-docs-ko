@@ -14,22 +14,13 @@ application.
 Build and Install
 -----------------
 
-When you want to deploy your application elsewhere, you build a
-distribution file. The current standard for Python distribution is the
-*wheel* format, with the ``.whl`` extension. Make sure the wheel library
-is installed first:
+When you want to deploy your application elsewhere, you build a *wheel*
+(``.whl``) file. Install and use the ``build`` tool to do this.
 
 .. code-block:: none
 
-    $ pip install wheel
-
-Running ``setup.py`` with Python gives you a command line tool to issue
-build-related commands. The ``bdist_wheel`` command will build a wheel
-distribution file.
-
-.. code-block:: none
-
-    $ python setup.py bdist_wheel
+    $ pip install build
+    $ python -m build --wheel
 
 You can find the file in ``dist/flaskr-1.0.0-py3-none-any.whl``. The
 file name is in the format of {project name}-{version}-{python tag}
@@ -48,39 +39,13 @@ Pip will install your project along with its dependencies.
 Since this is a different machine, you need to run ``init-db`` again to
 create the database in the instance folder.
 
-.. tabs::
+    .. code-block:: text
 
-   .. group-tab:: Bash
-
-      .. code-block:: text
-
-         $ export FLASK_APP=flaskr
-         $ flask init-db
-
-   .. group-tab:: Fish
-
-      .. code-block:: text
-
-         $ set -x FLASK_APP flaskr
-         $ flask init-db
-
-   .. group-tab:: CMD
-
-      .. code-block:: text
-
-         > set FLASK_APP=flaskr
-         > flask init-db
-
-   .. group-tab:: Powershell
-
-      .. code-block:: text
-
-         > $env:FLASK_APP = "flaskr"
-         > flask init-db
+        $ flask --app flaskr init-db
 
 When Flask detects that it's installed (not in editable mode), it uses
 a different directory for the instance folder. You can find it at
-``venv/var/flaskr-instance`` instead.
+``.venv/var/flaskr-instance`` instead.
 
 
 Configure the Secret Key
@@ -103,7 +68,7 @@ Create the ``config.py`` file in the instance folder, which the factory
 will read from if it exists. Copy the generated value into it.
 
 .. code-block:: python
-    :caption: ``venv/var/flaskr-instance/config.py``
+    :caption: ``.venv/var/flaskr-instance/config.py``
 
     SECRET_KEY = '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'
 
@@ -127,7 +92,7 @@ first install it in the virtual environment:
     $ pip install waitress
 
 You need to tell Waitress about your application, but it doesn't use
-``FLASK_APP`` like ``flask run`` does. You need to tell it to import and
+``--app`` like ``flask run`` does. You need to tell it to import and
 call the application factory to get an application object.
 
 .. code-block:: none

@@ -1,6 +1,8 @@
 import pytest
 
 import flask
+from flask.globals import app_ctx
+from flask.globals import request_ctx
 
 
 def test_basic_url_generation(app):
@@ -29,14 +31,14 @@ def test_url_generation_without_context_fails():
 
 def test_request_context_means_app_context(app):
     with app.test_request_context():
-        assert flask.current_app._get_current_object() == app
-    assert flask._app_ctx_stack.top is None
+        assert flask.current_app._get_current_object() is app
+    assert not flask.current_app
 
 
 def test_app_context_provides_current_app(app):
     with app.app_context():
-        assert flask.current_app._get_current_object() == app
-    assert flask._app_ctx_stack.top is None
+        assert flask.current_app._get_current_object() is app
+    assert not flask.current_app
 
 
 def test_app_tearing_down(app):
@@ -118,14 +120,14 @@ def test_app_tearing_down_with_unhandled_exception(app, client):
 
     @app.route("/")
     def index():
-        raise Exception("dummy")
+        raise ValueError("dummy")
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match="dummy"):
         with app.app_context():
             client.get("/")
 
     assert len(cleanup_stuff) == 1
-    assert isinstance(cleanup_stuff[0], Exception)
+    assert isinstance(cleanup_stuff[0], ValueError)
     assert str(cleanup_stuff[0]) == "dummy"
 
 
@@ -175,11 +177,11 @@ def test_context_refcounts(app, client):
 
     @app.route("/")
     def index():
-        with flask._app_ctx_stack.top:
-            with flask._request_ctx_stack.top:
+        with app_ctx:
+            with request_ctx:
                 pass
-        env = flask._request_ctx_stack.top.request.environ
-        assert env["werkzeug.request"] is not None
+
+        assert flask.request.environ["werkzeug.request"] is not None
         return ""
 
     res = client.get("/")
@@ -194,17 +196,14 @@ def test_clean_pop(app):
 
     @app.teardown_request
     def teardown_req(error=None):
-        1 / 0
+        raise ZeroDivisionError
 
     @app.teardown_appcontext
     def teardown_app(error=None):
         called.append("TEARDOWN")
 
-    try:
-        with app.test_request_context():
-            called.append(flask.current_app.name)
-    except ZeroDivisionError:
-        pass
+    with app.app_context():
+        called.append(flask.current_app.name)
 
     assert called == ["flask_test", "TEARDOWN"]
     assert not flask.current_app

@@ -5,10 +5,7 @@ Installation
 Python Version
 --------------
 
-We recommend using the latest version of Python. Flask supports Python
-3.6 and newer.
-
-``async`` support in Flask requires Python 3.7+ for ``contextvars.ContextVar``.
+We recommend using the latest version of Python. Flask supports Python 3.8 and newer.
 
 
 Dependencies
@@ -26,12 +23,14 @@ These distributions will be installed automatically when installing Flask.
   to protect Flask's session cookie.
 * `Click`_ is a framework for writing command line applications. It provides
   the ``flask`` command and allows adding custom management commands.
+* `Blinker`_ provides support for :doc:`signals`.
 
 .. _Werkzeug: https://palletsprojects.com/p/werkzeug/
 .. _Jinja: https://palletsprojects.com/p/jinja/
 .. _MarkupSafe: https://palletsprojects.com/p/markupsafe/
 .. _ItsDangerous: https://palletsprojects.com/p/itsdangerous/
 .. _Click: https://palletsprojects.com/p/click/
+.. _Blinker: https://blinker.readthedocs.io/
 
 
 Optional dependencies
@@ -40,15 +39,25 @@ Optional dependencies
 These distributions will not be installed automatically. Flask will detect and
 use them if you install them.
 
-* `Blinker`_ provides support for :doc:`signals`.
 * `python-dotenv`_ enables support for :ref:`dotenv` when running ``flask``
   commands.
 * `Watchdog`_ provides a faster, more efficient reloader for the development
   server.
 
-.. _Blinker: https://pythonhosted.org/blinker/
 .. _python-dotenv: https://github.com/theskumar/python-dotenv#readme
 .. _watchdog: https://pythonhosted.org/watchdog/
+
+
+greenlet
+~~~~~~~~
+
+You may choose to use gevent or eventlet with your application. In this
+case, greenlet>=1.0 is required. When using PyPy, PyPy>=7.3.7 is
+required.
+
+These are not minimum supported versions, they only indicate the first
+versions that added necessary features. You should use the latest
+versions of each.
 
 
 Virtual environments
@@ -75,7 +84,7 @@ environments.
 Create an environment
 ~~~~~~~~~~~~~~~~~~~~~
 
-Create a project folder and a :file:`venv` folder within:
+Create a project folder and a :file:`.venv` folder within:
 
 .. tabs::
 
@@ -85,7 +94,7 @@ Create a project folder and a :file:`venv` folder within:
 
          $ mkdir myproject
          $ cd myproject
-         $ python3 -m venv venv
+         $ python3 -m venv .venv
 
    .. group-tab:: Windows
 
@@ -93,7 +102,7 @@ Create a project folder and a :file:`venv` folder within:
 
          > mkdir myproject
          > cd myproject
-         > py -3 -m venv venv
+         > py -3 -m venv .venv
 
 
 .. _install-activate-env:
@@ -109,13 +118,13 @@ Before you work on your project, activate the corresponding environment:
 
       .. code-block:: text
 
-         $ . venv/bin/activate
+         $ . .venv/bin/activate
 
    .. group-tab:: Windows
 
       .. code-block:: text
 
-         > venv\Scripts\activate
+         > .venv\Scripts\activate
 
 Your shell prompt will change to show the name of the activated
 environment.

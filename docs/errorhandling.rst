@@ -69,7 +69,6 @@ See also:
 -   Sentry also supports catching errors from a worker queue
     (RQ, Celery, etc.) in a similar fashion. See the `Python SDK docs
     <https://docs.sentry.io/platforms/python/>`__ for more information.
--   `Getting started with Sentry <https://docs.sentry.io/quickstart/?platform=python>`__
 -   `Flask-specific documentation <https://docs.sentry.io/platforms/python/guides/flask/>`__
 
 
@@ -151,7 +150,7 @@ If a route receives an unallowed request method, a "405 Method Not Allowed"
 subclasses of :class:`~werkzeug.exceptions.HTTPException` and are provided by
 default in Flask.
 
-Flask gives you to the ability to raise any HTTP exception registered by
+Flask gives you the ability to raise any HTTP exception registered by
 Werkzeug. However, the default HTTP exceptions return simple exception
 pages. You might want to show custom error pages to the user when an error occurs.
 This can be done by registering error handlers.
@@ -232,7 +231,7 @@ responses, you could also pass them through directly.
 Error handlers still respect the exception class hierarchy. If you
 register handlers for both ``HTTPException`` and ``Exception``, the
 ``Exception`` handler will not handle ``HTTPException`` subclasses
-because it the ``HTTPException`` handler is more specific.
+because the ``HTTPException`` handler is more specific.
 
 
 Unhandled Exceptions
@@ -489,7 +488,7 @@ This is a simple example:
 
     @app.errorhandler(InvalidAPIUsage)
     def invalid_api_usage(e):
-        return jsonify(e.to_dict())
+        return jsonify(e.to_dict()), e.status_code
 
     # an API app route for getting user information
     # a correct request might be /api/user?user_id=420

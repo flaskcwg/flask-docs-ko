@@ -1,5 +1,4 @@
-pytest<7
-asgiref<3.5
-blinker
+pytest
+asgiref
 greenlet ; python_version < "3.11"
 python-dotenv
