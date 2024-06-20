@@ -35,3 +35,9 @@
 7. Create a Pull Request using Compare & pull request on Github.
 8. The base repository should be flaskcwg/flask-docs-ko at this time.
 9. Complete writing the Pull Request and await approval.
+
+## poedit 최근 번역자 자동 입력 설정
+
+poedit의 settings에서 name과 email을 설정하면 po 파일의 Last-Translator에 자동으로 입력됩니다.
+
+<img width="420" alt="Screenshot 2024-06-21 at 12 47 52 AM" src="https://github.com/flaskcwg/flask-docs-ko/assets/8137615/f69a588b-8436-4dd1-a149-314ac94fb5ad">
