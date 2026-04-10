@@ -9,107 +9,129 @@ msgstr ""
 "Project-Id-Version: Flask 3.0.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-20 15:20-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: ko\n"
+"PO-Revision-Date: 2026-04-10 09:42+0900\n"
+"Last-Translator: \n"
 "Language-Team: ko <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.14.0\n"
+"X-Generator: Poedit 3.9\n"
 
 #: ../../tutorial/install.rst:2
 msgid "Make the Project Installable"
-msgstr ""
+msgstr "프로젝트를 설치 가능하게 만들기"
 
 #: ../../tutorial/install.rst:4
 msgid ""
-"Making your project installable means that you can build a *wheel* file "
-"and install that in another environment, just like you installed Flask in"
-" your project's environment. This makes deploying your project the same "
-"as installing any other library, so you're using all the standard Python "
-"tools to manage everything."
+"Making your project installable means that you can build a *wheel* file and "
+"install that in another environment, just like you installed Flask in your "
+"project's environment. This makes deploying your project the same as "
+"installing any other library, so you're using all the standard Python tools "
+"to manage everything."
 msgstr ""
+"프로젝트를 설치 가능하게 만든다는 것은 *wheel* 파일을 빌드하고, Flask를 프로"
+"젝트 환경에 설치했던 것처럼 다른 환경에도 설치할 수 있다는 의미입니다. 이렇"
+"게 하면 프로젝트 배포가 다른 라이브러리를 설치하는 것과 동일한 과정이 되므"
+"로, 모든 것을 관리하는 데 표준 Python 도구를 활용할 수 있습니다."
 
 #: ../../tutorial/install.rst:9
 msgid ""
-"Installing also comes with other benefits that might not be obvious from "
-"the tutorial or as a new Python user, including:"
+"Installing also comes with other benefits that might not be obvious from the "
+"tutorial or as a new Python user, including:"
 msgstr ""
+"설치를 하면 튜토리얼만 봐서는, 혹은 Python 입문자라면 바로 알아채기 어려운 추"
+"가적인 이점들도 따라옵니다. 예를 들면:"
 
 #: ../../tutorial/install.rst:12
 msgid ""
 "Currently, Python and Flask understand how to use the ``flaskr`` package "
-"only because you're running from your project's directory. Installing "
-"means you can import it no matter where you run from."
+"only because you're running from your project's directory. Installing means "
+"you can import it no matter where you run from."
 msgstr ""
+"현재 Python과 Flask가 ``flaskr`` 패키지를 인식할 수 있는 것은 프로젝트 디렉토"
+"리에서 실행하고 있기 때문입니다. 설치를 해두면 어느 위치에서 실행하든 상관없"
+"이 해당 패키지를 임포트할 수 있습니다."
 
 #: ../../tutorial/install.rst:16
 msgid ""
-"You can manage your project's dependencies just like other packages do, "
-"so ``pip install yourproject.whl`` installs them."
+"You can manage your project's dependencies just like other packages do, so "
+"``pip install yourproject.whl`` installs them."
 msgstr ""
+"다른 패키지들과 마찬가지로 프로젝트의 의존성을 관리할 수 있으므로, ``pip "
+"install yourproject.whl``을 실행하면 의존성까지 함께 설치됩니다."
 
 #: ../../tutorial/install.rst:19
 msgid ""
 "Test tools can isolate your test environment from your development "
 "environment."
 msgstr ""
+"테스트 도구를 사용하면 테스트 환경을 개발 환경으로부터 분리할 수 있습니다."
 
 #: ../../tutorial/install.rst:23
 msgid ""
-"This is being introduced late in the tutorial, but in your future "
-"projects you should always start with this."
+"This is being introduced late in the tutorial, but in your future projects "
+"you should always start with this."
 msgstr ""
+"이 내용은 튜토리얼 후반부에 다루고 있지만, 앞으로 진행할 프로젝트에서는 항상 "
+"이것부터 시작하는 것이 좋습니다."
 
 #: ../../tutorial/install.rst:28
 msgid "Describe the Project"
-msgstr ""
+msgstr "프로젝트 설명"
 
 #: ../../tutorial/install.rst:30
 msgid "The ``pyproject.toml`` file describes your project and how to build it."
-msgstr ""
+msgstr "``pyproject.toml`` 파일은 프로젝트와 빌드 방법을 설명합니다."
 
 #: ../../tutorial/install.rst:32
 msgid "``pyproject.toml``"
-msgstr ""
+msgstr "``pyproject.toml``"
 
 #: ../../tutorial/install.rst:47
 msgid ""
 "See the official `Packaging tutorial <packaging tutorial_>`_ for more "
 "explanation of the files and options used."
 msgstr ""
+"파일과 사용되는 옵션에 대한 자세한 설명은 공식 `패키징 튜토리얼 <packaging "
+"tutorial_>`_을 참고하세요."
 
 #: ../../tutorial/install.rst:54
 msgid "Install the Project"
-msgstr ""
+msgstr "프로젝트 설치"
 
 #: ../../tutorial/install.rst:56
 msgid "Use ``pip`` to install your project in the virtual environment."
-msgstr ""
+msgstr "``pip``을 사용하여 가상 환경에 프로젝트를 설치하세요."
 
 #: ../../tutorial/install.rst:62
 msgid ""
 "This tells pip to find ``pyproject.toml`` in the current directory and "
-"install the project in *editable* or *development* mode. Editable mode "
-"means that as you make changes to your local code, you'll only need to "
-"re-install if you change the metadata about the project, such as its "
-"dependencies."
+"install the project in *editable* or *development* mode. Editable mode means "
+"that as you make changes to your local code, you'll only need to re-install "
+"if you change the metadata about the project, such as its dependencies."
 msgstr ""
+"이 명령은 pip에게 현재 디렉토리에서 ``pyproject.toml``을 찾아 프로젝트를 *편"
+"집 가능(editable)* 모드, 즉 *개발(development)* 모드로 설치하도록 지시합니"
+"다. 편집 가능 모드란 로컬 코드를 수정하더라도 의존성 등 프로젝트 메타데이터"
+"를 변경한 경우에만 재설치가 필요하다는 의미입니다."
 
 #: ../../tutorial/install.rst:67
 msgid "You can observe that the project is now installed with ``pip list``."
-msgstr ""
+msgstr "``pip list``를 실행하면 프로젝트가 설치된 것을 확인할 수 있습니다."
 
 #: ../../tutorial/install.rst:84
 msgid ""
-"Nothing changes from how you've been running your project so far. "
-"``--app`` is still set to ``flaskr`` and ``flask run`` still runs the "
-"application, but you can call it from anywhere, not just the ``flask-"
-"tutorial`` directory."
+"Nothing changes from how you've been running your project so far. ``--app`` "
+"is still set to ``flaskr`` and ``flask run`` still runs the application, but "
+"you can call it from anywhere, not just the ``flask-tutorial`` directory."
 msgstr ""
+"지금까지 프로젝트를 실행해 온 방식과 달라지는 것은 없습니다. ``--app``은 여전"
+"히 ``flaskr``로 설정되어 있고 ``flask run``으로 애플리케이션을 실행하지만, 이"
+"제는 ``flask-tutorial`` 디렉토리가 아닌 어느 곳에서든 실행할 수 있습니다."
 
 #: ../../tutorial/install.rst:89
 msgid "Continue to :doc:`tests`."
-msgstr ""
+msgstr "다음으로 :doc:`tests`를 계속 진행하세요."
