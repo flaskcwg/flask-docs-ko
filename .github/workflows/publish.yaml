@@ -9,8 +9,8 @@ jobs:
     outputs:
       hash: ${{ steps.hash.outputs.hash }}
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.x'
           cache: pip
@@ -23,7 +23,7 @@ jobs:
       - name: generate hash
         id: hash
         run: cd dist && echo "hash=$(sha256sum * | base64 -w0)" >> $GITHUB_OUTPUT
-      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      - uses: actions/upload-artifact@c6a366c94c3e0affe28c06c8df20a878f24da3cf # v3.2.2
         with:
           path: ./dist
   provenance:
@@ -33,7 +33,7 @@ jobs:
       id-token: write
       contents: write
     # Can't pin with hash due to how this workflow works.
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
     with:
       base64-subjects: ${{ needs.build.outputs.hash }}
   create-release:
@@ -44,7 +44,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@a9bc5e6ef2cb54c177f32aa5726adaa15e7e2d59 # v3.1.0
       - name: create release
         run: >
           gh release create --draft --repo ${{ github.repository }}
@@ -63,11 +63,11 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450 # v1.8.14
+      - uses: actions/download-artifact@a9bc5e6ef2cb54c177f32aa5726adaa15e7e2d59 # v3.1.0
+      - uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           repository-url: https://test.pypi.org/legacy/
           packages-dir: artifact/
-      - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450 # v1.8.14
+      - uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           packages-dir: artifact/
