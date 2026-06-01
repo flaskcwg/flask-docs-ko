@@ -8,10 +8,14 @@ alabaster==0.7.16
     # via
     #   -r docs.txt
     #   sphinx
-asgiref==3.8.1
+asgiref==3.11.1
     # via
     #   -r tests.txt
     #   -r typing.txt
+ast-serialize==0.5.0
+    # via
+    #   -r typing.txt
+    #   mypy
 babel==2.14.0
     # via
     #   -r docs.txt
@@ -22,7 +26,7 @@ certifi==2024.2.2
     # via
     #   -r docs.txt
     #   requests
-cffi==1.16.0
+cffi==2.0.0
     # via
     #   -r typing.txt
     #   cryptography
@@ -36,11 +40,11 @@ charset-normalizer==3.3.2
     #   requests
 colorama==0.4.6
     # via tox
-cryptography==43.0.0
+cryptography==48.0.0
     # via -r typing.txt
 distlib==0.3.8
     # via virtualenv
-docutils==0.20.1
+docutils==0.22.4
     # via
     #   -r docs.txt
     #   sphinx
@@ -68,11 +72,15 @@ jinja2==3.1.3
     # via
     #   -r docs.txt
     #   sphinx
+librt==0.11.0
+    # via
+    #   -r typing.txt
+    #   mypy
 markupsafe==2.1.5
     # via
     #   -r docs.txt
     #   jinja2
-mypy==1.11.1
+mypy==2.1.0
     # via -r typing.txt
 mypy-extensions==1.0.0
     # via
@@ -93,8 +101,12 @@ packaging==24.0
     #   pytest
     #   sphinx
     #   tox
-pallets-sphinx-themes==2.1.3
+pallets-sphinx-themes==2.5.0
     # via -r docs.txt
+pathspec==1.1.1
+    # via
+    #   -r typing.txt
+    #   mypy
 platformdirs==4.2.0
     # via
     #   tox
@@ -105,7 +117,7 @@ pluggy==1.5.0
     #   -r typing.txt
     #   pytest
     #   tox
-pre-commit==3.8.0
+pre-commit==4.6.0
     # via -r dev.in
 pycparser==2.22
     # via
@@ -118,13 +130,13 @@ pygments==2.17.2
     #   sphinx-tabs
 pyproject-api==1.6.1
     # via tox
-pyright==1.1.374
+pyright==1.1.409
     # via -r typing.txt
 pytest==8.3.2
     # via
     #   -r tests.txt
     #   -r typing.txt
-python-dotenv==1.0.1
+python-dotenv==1.2.2
     # via
     #   -r tests.txt
     #   -r typing.txt
@@ -134,17 +146,26 @@ requests==2.31.0
     # via
     #   -r docs.txt
     #   sphinx
+roman-numerals==4.1.0
+    # via
+    #   -r docs.txt
+    #   sphinx
 snowballstemmer==2.2.0
     # via
     #   -r docs.txt
     #   sphinx
-sphinx==8.0.2
+sphinx==9.1.0
     # via
     #   -r docs.txt
     #   pallets-sphinx-themes
+    #   sphinx-notfound-page
     #   sphinx-tabs
     #   sphinxcontrib-log-cabinet
-sphinx-tabs==3.4.5
+sphinx-notfound-page==1.1.0
+    # via
+    #   -r docs.txt
+    #   pallets-sphinx-themes
+sphinx-tabs==3.5.0
     # via -r docs.txt
 sphinxcontrib-applehelp==1.0.8
     # via
@@ -154,7 +175,7 @@ sphinxcontrib-devhelp==1.0.6
     # via
     #   -r docs.txt
     #   sphinx
-sphinxcontrib-htmlhelp==2.0.5
+sphinxcontrib-htmlhelp==2.1.0
     # via
     #   -r docs.txt
     #   sphinx
@@ -182,6 +203,7 @@ typing-extensions==4.11.0
     # via
     #   -r typing.txt
     #   mypy
+    #   pyright
 urllib3==2.2.1
     # via
     #   -r docs.txt
